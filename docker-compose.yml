@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+  web:
+    build: .
+    # command: python manage.py runserver 0.0.0.0:8000
+    command: jupyter notebook --config=/root/.jupyter/jupyter_notebook_config.py --port $PORT
+    volumes:
+      - .:/home/cfeuser/src/
+    expose:
+      - 8888
+    env_file: .env
+  nginx:
+    image: library/nginx
+    build: ./nginx
+    ports:
+      - "8888:80"
+    depends_on:
+      - web
+    labels: 
+      kompose.service.type: LoadBalancer
